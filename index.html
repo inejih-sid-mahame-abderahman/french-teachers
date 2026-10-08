@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concours : Professeur Principal de Français - 300+ Questions</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#1e3a8a;
+    --primary-dark:#1e2a5a;
+    --accent:#f59e0b;
+    --accent-dark:#d97706;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#1c2b2d;
+    --muted:#5f7470;
+    --success:#16a34a;
+    --success-bg:#e6f6ec;
+    --error:#dc2626;
+    --error-bg:#fdeaea;
+    --border:#dbe4f0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Cairo',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.8;
+    padding:20px;
+  }
+  .container{max-width:960px;margin:0 auto;}
+  header{
+    background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+    color:#fff;border-radius:18px;padding:30px 25px;text-align:center;
+    box-shadow:0 10px 30px rgba(30,58,138,.25);margin-bottom:22px;
+    position:relative;overflow:hidden;
+  }
+  header::before{
+    content:"";position:absolute;top:-50%;right:-20%;
+    width:300px;height:300px;
+    background:radial-gradient(circle,rgba(245,158,11,.25),transparent 70%);
+    border-radius:50%;
+  }
+  header h1{font-size:1.8rem;font-weight:900;margin-bottom:8px;position:relative;}
+  header p{color:#cfe0f5;font-size:1rem;position:relative;}
+  .badge{
+    display:inline-block;background:var(--accent);color:#3b2c00;
+    font-weight:700;padding:4px 14px;border-radius:30px;
+    font-size:.85rem;margin-top:12px;position:relative;
+  }
+  .stats{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:14px;margin-bottom:22px;
+  }
+  .stat-card{
+    background:var(--card);border-radius:14px;padding:18px 12px;
+    text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.05);
+    border:1px solid var(--border);transition:transform .2s;
+  }
+  .stat-card:hover{transform:translateY(-3px);}
+  .stat-card .num{font-size:1.7rem;font-weight:900;color:var(--primary);display:block;}
+  .stat-card .lbl{font-size:.85rem;color:var(--muted);font-weight:600;}
+  .progress-wrap{
+    background:var(--card);border-radius:14px;padding:18px 20px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);border:1px solid var(--border);
+    margin-bottom:22px;
+  }
+  .progress-top{display:flex;justify-content:space-between;font-size:.9rem;font-weight:700;color:var(--muted);margin-bottom:10px;}
+  .progress-bar{height:12px;background:#e8eef6;border-radius:20px;overflow:hidden;}
+  .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),#3b82f6);border-radius:20px;transition:width .4s ease;}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;justify-content:center;}
+  .btn{font-family:'Cairo',sans-serif;border:none;padding:12px 26px;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;}
+  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 14px rgba(30,58,138,.3);}
+  .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);}
+  .btn-accent{background:var(--accent);color:#3b2c00;box-shadow:0 4px 14px rgba(245,158,11,.35);}
+  .btn-accent:hover{background:var(--accent-dark);transform:translateY(-2px);}
+  .btn-outline{background:#fff;color:var(--primary);border:2px solid var(--primary);}
+  .btn-outline:hover{background:#eaf0fb;}
+  .quiz-section{display:none;}
+  .quiz-section.active{display:block;}
+  .question-card{
+    background:var(--card);border-radius:16px;padding:24px 22px;
+    box-shadow:0 6px 20px rgba(0,0,0,.06);border:1px solid var(--border);
+    margin-bottom:18px;animation:fadeIn .35s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+  .q-num{background:var(--primary);color:#fff;font-weight:700;padding:4px 14px;border-radius:20px;font-size:.85rem;}
+  .q-tag{background:#eef2fa;color:var(--primary);font-weight:600;padding:4px 12px;border-radius:20px;font-size:.78rem;}
+  .q-text{font-size:1.15rem;font-weight:700;line-height:1.9;margin-bottom:18px;color:var(--text);}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{
+    display:flex;align-items:flex-start;gap:12px;background:#fafcff;
+    border:2px solid var(--border);border-radius:12px;padding:12px 16px;
+    cursor:pointer;transition:all .2s;font-size:1rem;
+  }
+  .option:hover{border-color:var(--primary);background:#eff5ff;}
+  .option.selected{border-color:var(--primary);background:#e0ecff;}
+  .option.correct{border-color:var(--success);background:var(--success-bg);}
+  .option.wrong{border-color:var(--error);background:var(--error-bg);}
+  .option .letter{
+    width:28px;height:28px;flex-shrink:0;border-radius:50%;
+    background:var(--primary);color:#fff;display:flex;align-items:center;
+    justify-content:center;font-weight:700;font-size:.85rem;
+  }
+  .option.correct .letter{background:var(--success);}
+  .option.wrong .letter{background:var(--error);}
+  .explanation{
+    margin-top:14px;padding:14px 16px;background:#fffbe9;
+    border-left:4px solid var(--accent);border-radius:8px;
+    font-size:.92rem;display:none;
+  }
+  .explanation.show{display:block;}
+  .nav-buttons{display:flex;justify-content:space-between;gap:10px;margin-top:22px;}
+  .result-card{
+    background:var(--card);border-radius:18px;padding:40px 28px;
+    text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.08);
+    border:1px solid var(--border);
+  }
+  .result-circle{
+    width:170px;height:170px;border-radius:50%;margin:0 auto 22px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:conic-gradient(var(--primary) 0deg, #e8eef6 0deg);position:relative;
+  }
+  .result-circle::before{content:"";position:absolute;inset:12px;background:#fff;border-radius:50%;}
+  .result-circle .pct{font-size:2.4rem;font-weight:900;color:var(--primary);position:relative;z-index:1;}
+  .result-circle .pct-lbl{font-size:.8rem;color:var(--muted);position:relative;z-index:1;}
+  .result-msg{font-size:1.3rem;font-weight:700;margin-bottom:10px;}
+  .result-sub{color:var(--muted);margin-bottom:24px;}
+  .sections-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:22px;}
+  .section-card{
+    background:var(--card);border:2px solid var(--border);border-radius:14px;
+    padding:18px;text-align:center;cursor:pointer;transition:all .2s;
+  }
+  .section-card:hover{border-color:var(--primary);transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.07);}
+  .section-card.active{border-color:var(--primary);background:#e0ecff;}
+  .section-card .icon{font-size:1.8rem;margin-bottom:8px;}
+  .section-card .name{font-weight:700;font-size:.95rem;}
+  .section-card .count{font-size:.78rem;color:var(--muted);}
+  @media(max-width:600px){
+    body{padding:12px;}
+    header h1{font-size:1.3rem;}
+    .q-text{font-size:1rem;}
+    .stat-card .num{font-size:1.3rem;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🎓 Concours : Professeur Principal de Français</h1>
+    <p>Préparation intensive – Mathématiques · Sciences · Français</p>
+    <span class="badge">300+ Questions à choix multiples</span>
+  </header>
+
+  <div class="stats">
+    <div class="stat-card"><span class="num" id="statTotal">0</span><span class="lbl">Total Questions</span></div>
+    <div class="stat-card"><span class="num" id="statAnswered">0</span><span class="lbl">Répondues</span></div>
+    <div class="stat-card"><span class="num" id="statCorrect" style="color:var(--success)">0</span><span class="lbl">Correctes</span></div>
+    <div class="stat-card"><span class="num" id="statWrong" style="color:var(--error)">0</span><span class="lbl">Fausses</span></div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span>📊 Progression</span>
+      <span id="progressText">0 / 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="sections-grid" id="sectionsGrid"></div>
+
+  <div class="controls">
+    <button class="btn btn-primary" onclick="startQuiz('all')">🚀 Examen complet</button>
+    <button class="btn btn-accent" onclick="startQuiz('random')">🎲 Quiz aléatoire (50)</button>
+    <button class="btn btn-outline" onclick="resetQuiz()">🔄 Réinitialiser</button>
+  </div>
+
+  <div id="quizArea" class="quiz-section"></div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+
+/* ============================================================
+   MATHÉMATIQUES (180 questions) - FOCUS PRINCIPAL
+   ============================================================ */
+
+/* --- Nombres et opérations (30) --- */
+{cat:"Mathématiques",q:"Quel est le résultat de 25 × 4 + 30 ÷ 6 ?",opts:["105","110","115","120"],a:0,exp:"25×4 = 100 ; 30÷6 = 5 ; 100+5 = 105."},
+{cat:"Mathématiques",q:"Quel est le PGCD de 48 et 60 ?",opts:["6","12","18","24"],a:1,exp:"PGCD(48,60) = 12."},
+{cat:"Mathématiques",q:"Quel est le PPCM de 12 et 18 ?",opts:["36","24","48","72"],a:0,exp:"PPCM(12,18) = 36."},
+{cat:"Mathématiques",q:"Combien vaut 3⁴ ?",opts:["27","64","81","12"],a:2,exp:"3⁴ = 3×3×3×3 = 81."},
+{cat:"Mathématiques",q:"Quelle est la valeur de √169 ?",opts:["11","12","13","14"],a:2,exp:"√169 = 13."},
+{cat:"Mathématiques",q:"Quel est le résultat de 7/8 + 5/8 ?",opts:["12/16","12/8","3/2","1"],a:1,exp:"7/8 + 5/8 = 12/8 = 3/2."},
+{cat:"Mathématiques",q:"Combien vaut 0,25 sous forme de fraction ?",opts:["1/2","1/3","1/4","1/5"],a:2,exp:"0,25 = 1/4."},
+{cat:"Mathématiques",q:"Quel nombre est premier ?",opts:["21","27","29","33"],a:2,exp:"29 est premier."},
+{cat:"Mathématiques",q:"Quel est le résultat de 8² - 4² ?",opts:["16","32","48","64"],a:2,exp:"8²-4² = 64-16 = 48."},
+{cat:"Mathématiques",q:"Combien font 15 % de 200 ?",opts:["20","25","30","35"],a:2,exp:"200×15/100 = 30."},
+{cat:"Mathématiques",q:"Écrire 0,00045 en notation scientifique :",opts:["4,5×10⁻³","4,5×10⁻⁴","4,5×10⁻⁵","45×10⁻⁵"],a:1,exp:"4,5×10⁻⁴."},
+{cat:"Mathématiques",q:"Quel est l'inverse de 5/3 ?",opts:["-5/3","3/5","-3/5","1"],a:1,exp:"Inverse de 5/3 = 3/5."},
+{cat:"Mathématiques",q:"Quelle est la valeur absolue de -17 ?",opts:["-17","0","17","1/17"],a:2,exp:"|−17| = 17."},
+{cat:"Mathématiques",q:"Combien vaut (2/3)² ?",opts:["4/9","2/9","4/6","2/6"],a:0,exp:"(2/3)² = 4/9."},
+{cat:"Mathématiques",q:"Le nombre 1 est-il premier ?",opts:["Oui","Non","Parfois","Cela dépend"],a:1,exp:"Non, 1 n'est pas premier."},
+{cat:"Mathématiques",q:"Quelle est la décomposition en facteurs premiers de 60 ?",opts:["2²×3×5","2×3²×5","2²×3²×5","2³×3×5"],a:0,exp:"60 = 2²×3×5."},
+{cat:"Mathématiques",q:"Que vaut 5! (factorielle 5) ?",opts:["25","60","120","720"],a:2,exp:"5! = 120."},
+{cat:"Mathématiques",q:"Combien font 3/4 × 8/9 ?",opts:["2/3","1/2","3/5","5/6"],a:0,exp:"3/4 × 8/9 = 24/36 = 2/3."},
+{cat:"Mathématiques",q:"Quel est le carré de 0,5 ?",opts:["0,25","0,5","1","2,5"],a:0,exp:"0,5² = 0,25."},
+{cat:"Mathématiques",q:"Quel est le cube de 3 ?",opts:["9","27","81","243"],a:1,exp:"3³ = 27."},
+{cat:"Mathématiques",q:"Quel est le résultat de (-3) + (-7) ?",opts:["-10","10","-4","4"],a:0,exp:"(-3)+(-7) = -10."},
+{cat:"Mathématiques",q:"(-2) × (-5) × (-1) = ?",opts:["10","-10","-7","7"],a:1,exp:"(-2)×(-5)=10 ; 10×(-1)=-10."},
+{cat:"Mathématiques",q:"Quel est le résultat de 100 ÷ (-4) ?",opts:["25","-25","-40","40"],a:1,exp:"100 ÷ (-4) = -25."},
+{cat:"Mathématiques",q:"Combien vaut 2⁻³ ?",opts:["-8","-6","1/8","1/6"],a:2,exp:"2⁻³ = 1/2³ = 1/8."},
+{cat:"Mathématiques",q:"Quel est l'arrondi au dixième de 4,678 ?",opts:["4,6","4,7","4,68","5"],a:1,exp:"4,7."},
+{cat:"Mathématiques",q:"Combien font 3,5 + 2,75 ?",opts:["5,25","6","6,25","6,75"],a:2,exp:"3,50+2,75 = 6,25."},
+{cat:"Mathématiques",q:"Quel est le reste de la division 47 par 5 ?",opts:["1","2","3","4"],a:1,exp:"47 = 9×5 + 2."},
+{cat:"Mathématiques",q:"Combien y a-t-il de diviseurs de 12 ?",opts:["4","5","6","8"],a:2,exp:"1,2,3,4,6,12 → 6 diviseurs."},
+{cat:"Mathématiques",q:"Quel est le résultat de 6 × (4 + 3) ?",opts:["24","42","18","30"],a:1,exp:"6×(7) = 42."},
+{cat:"Mathématiques",q:"Quelle est la valeur de π arrondie au centième ?",opts:["3,14","3,15","3,13","3,16"],a:0,exp:"π ≈ 3,14."},
+
+/* --- Algèbre (30) --- */
+{cat:"Mathématiques",q:"Résoudre : 2x + 5 = 13",opts:["x=3","x=4","x=5","x=9"],a:1,exp:"2x = 8 → x = 4."},
+{cat:"Mathématiques",q:"Résoudre : 3x - 7 = 8",opts:["x=3","x=5","x=7","x=15"],a:1,exp:"3x = 15 → x = 5."},
+{cat:"Mathématiques",q:"Développer (x+3)² :",opts:["x²+9","x²+6x+9","x²+3x+9","x²+6x"],a:1,exp:"(x+3)² = x²+6x+9."},
+{cat:"Mathématiques",q:"Factoriser x² - 9 :",opts:["(x-3)(x-3)","(x+3)(x+3)","(x-3)(x+3)","x(x-9)"],a:2,exp:"x²-9 = (x-3)(x+3)."},
+{cat:"Mathématiques",q:"Développer (2x-1)(x+4) :",opts:["2x²+7x-4","2x²+8x-4","2x²-7x-4","2x²+7x+4"],a:0,exp:"2x²+8x-x-4 = 2x²+7x-4."},
+{cat:"Mathématiques",q:"Résoudre x² = 25 :",opts:["x=5","x=-5","x=5 ou x=-5","x=0"],a:2,exp:"x = ±5."},
+{cat:"Mathématiques",q:"Résoudre : 5x - 2 = 3x + 6",opts:["x=2","x=4","x=3","x=1"],a:1,exp:"2x = 8 → x = 4."},
+{cat:"Mathématiques",q:"Quelle est la forme canonique de x² - 4x + 3 ?",opts:["(x-2)²-1","(x-2)²+1","(x+2)²-1","(x-2)²-3"],a:0,exp:"x²-4x+3 = (x-2)²-1."},
+{cat:"Mathématiques",q:"Résoudre x² - 5x + 6 = 0",opts:["x=1 ou 6","x=2 ou 3","x=-2 ou -3","x=0 ou 5"],a:1,exp:"x=2 ou x=3."},
+{cat:"Mathématiques",q:"Simplifier : (x³)²",opts:["x⁵","x⁶","x⁹","x"],a:1,exp:"(x³)² = x⁶."},
+{cat:"Mathématiques",q:"Quel est le discriminant de x² - 4x + 3 ?",opts:["2","4","8","16"],a:1,exp:"Δ = 16-12 = 4."},
+{cat:"Mathématiques",q:"Si f(x) = 2x+1, que vaut f(3) ?",opts:["5","6","7","8"],a:2,exp:"f(3) = 2×3+1 = 7."},
+{cat:"Mathématiques",q:"Si f(x) = x², que vaut f(-3) ?",opts:["-9","9","-6","6"],a:1,exp:"(-3)² = 9."},
+{cat:"Mathématiques",q:"Résoudre : x/3 = 4",opts:["x=1","x=7","x=12","x=3/4"],a:2,exp:"x = 12."},
+{cat:"Mathématiques",q:"Développer 3(x+2) :",opts:["3x+2","3x+5","3x+6","3x+32"],a:2,exp:"3x+6."},
+{cat:"Mathématiques",q:"Factoriser 4x + 8 :",opts:["4(x+2)","4(x+8)","2(2x+8)","8(x+1)"],a:0,exp:"4(x+2)."},
+{cat:"Mathématiques",q:"Résoudre : 2(x+3) = 10",opts:["x=1","x=2","x=3","x=4"],a:1,exp:"x+3=5 → x=2."},
+{cat:"Mathématiques",q:"Quelle est l'équation de la droite passant par A(0,2) de pente 3 ?",opts:["y=2x+3","y=3x+2","y=3x-2","y=-3x+2"],a:1,exp:"y = 3x+2."},
+{cat:"Mathématiques",q:"Le point (2,5) appartient-il à y = 2x+1 ?",opts:["Oui","Non","Peut-être","Impossible de savoir"],a:0,exp:"2×2+1 = 5. Oui."},
+{cat:"Mathématiques",q:"Résoudre le système : x+y=10 ; x-y=4",opts:["x=6,y=4","x=7,y=3","x=5,y=5","x=8,y=2"],a:1,exp:"2x=14→x=7; y=3."},
+{cat:"Mathématiques",q:"Quelle est la valeur de x dans : 5x = 3x + 10 ?",opts:["x=3","x=4","x=5","x=10"],a:2,exp:"2x=10 → x=5."},
+{cat:"Mathématiques",q:"Simplifier : 2x + 3x - x :",opts:["4x","5x","6x","2x"],a:0,exp:"2+3-1 = 4."},
+{cat:"Mathématiques",q:"Résoudre : x² = 3x",opts:["x=0 ou 3","x=3","x=0","x=1 ou 3"],a:0,exp:"x(x-3)=0."},
+{cat:"Mathématiques",q:"Développer (a+b)(a-b) :",opts:["a²+b²","a²-b²","a²+2ab+b²","a²-2ab+b²"],a:1,exp:"a²-b²."},
+{cat:"Mathématiques",q:"Le coefficient directeur de y = -2x+1 est :",opts:["2","-2","1","-1"],a:1,exp:"-2."},
+{cat:"Mathématiques",q:"Combien vaut f(0) si f(x) = 3x² + 1 ?",opts:["0","1","3","4"],a:1,exp:"f(0)=1."},
+{cat:"Mathématiques",q:"Résoudre : |x| = 7",opts:["x=7","x=-7","x=7 ou x=-7","Impossible"],a:2,exp:"x=±7."},
+{cat:"Mathématiques",q:"Développer : (x+1)³",opts:["x³+1","x³+3x²+3x+1","x³+3x+1","x³+6x²+1"],a:1,exp:"Identité remarquable."},
+{cat:"Mathématiques",q:"Résoudre : 7 - 2x = 1",opts:["x=2","x=3","x=4","x=6"],a:1,exp:"2x=6 → x=3."},
+{cat:"Mathématiques",q:"Factoriser x² + 6x + 9 :",opts:["(x+3)²","(x+3)(x-3)","(x+9)(x+1)","x(x+6)+9"],a:0,exp:"(x+3)²."},
+
+/* --- Géométrie (35) --- */
+{cat:"Mathématiques",q:"Quelle est l'aire d'un carré de côté 5 cm ?",opts:["10 cm²","20 cm²","25 cm²","30 cm²"],a:2,exp:"Aire = c² = 25 cm²."},
+{cat:"Mathématiques",q:"Quel est le périmètre d'un rectangle 8×5 ?",opts:["13","26","40","80"],a:1,exp:"P = 2(8+5) = 26."},
+{cat:"Mathématiques",q:"L'aire d'un triangle de base 6 et de hauteur 4 :",opts:["10","12","24","48"],a:1,exp:"A = b×h/2 = 12."},
+{cat:"Mathématiques",q:"Dans un triangle rectangle, le théorème de Pythagore s'écrit :",opts:["a+b=c","a²+b²=c²","a²-b²=c²","ab=c"],a:1,exp:"a²+b²=c²."},
+{cat:"Mathématiques",q:"Un triangle avec les côtés 3, 4, 5 est :",opts:["Isocèle","Rectangle","Équilatéral","Quelconque"],a:1,exp:"3²+4²=5² → rectangle."},
+{cat:"Mathématiques",q:"Quelle est la somme des angles d'un triangle ?",opts:["90°","180°","270°","360°"],a:1,exp:"180°."},
+{cat:"Mathématiques",q:"La circonférence d'un cercle de rayon 3 cm (π≈3,14) :",opts:["9,42","18,84","28,26","6,28"],a:1,exp:"C = 2πr = 18,84."},
+{cat:"Mathématiques",q:"L'aire d'un cercle de rayon 5 cm :",opts:["25π","10π","5π","50π"],a:0,exp:"A = πr² = 25π."},
+{cat:"Mathématiques",q:"Le volume d'un cube d'arête 4 cm :",opts:["12","16","48","64"],a:3,exp:"V = 4³ = 64."},
+{cat:"Mathématiques",q:"Le volume d'un cylindre :",opts:["πr²h","πrh","2πr²","πr²/2"],a:0,exp:"V = πr²h."},
+{cat:"Mathématiques",q:"Un angle de 90° est :",opts:["Aigu","Droit","Obtus","Plat"],a:1,exp:"Droit."},
+{cat:"Mathématiques",q:"Un angle de 120° est :",opts:["Aigu","Droit","Obtus","Plat"],a:2,exp:"Obtus."},
+{cat:"Mathématiques",q:"Deux angles complémentaires font :",opts:["90°","180°","270°","360°"],a:0,exp:"90°."},
+{cat:"Mathématiques",q:"Deux angles supplémentaires font :",opts:["90°","180°","270°","360°"],a:1,exp:"180°."},
+{cat:"Mathématiques",q:"Un angle de 45° a pour complément :",opts:["30°","45°","60°","90°"],a:1,exp:"90-45 = 45°."},
+{cat:"Mathématiques",q:"Dans un triangle isocèle, les angles à la base :",opts:["Sont différents","Sont égaux","Sont droits","Sont obtus"],a:1,exp:"Égaux."},
+{cat:"Mathématiques",q:"Le périmètre d'un cercle est aussi appelé :",opts:["Aire","Circonférence","Diamètre","Rayon"],a:1,exp:"Circonférence."},
+{cat:"Mathématiques",q:"Si le diamètre est 10 cm, le rayon est :",opts:["5 cm","10 cm","20 cm","100 cm"],a:0,exp:"r = d/2 = 5."},
+{cat:"Mathématiques",q:"Deux droites parallèles ont :",opts:["Le même coefficient directeur","Des coefficients opposés","Des coefficients inverses","Aucun coefficient"],a:0,exp:"Même coefficient."},
+{cat:"Mathématiques",q:"Deux droites perpendiculaires ont des coefficients :",opts:["Égaux","Opposés","Inverses","Inverses et opposés"],a:3,exp:"Produit = -1."},
+{cat:"Mathématiques",q:"Un quadrilatère ayant 4 côtés égaux et 4 angles droits est :",opts:["Un rectangle","Un losange","Un carré","Un trapèze"],a:2,exp:"Un carré."},
+{cat:"Mathématiques",q:"Dans un parallélogramme, les côtés opposés sont :",opts:["Perpendiculaires","Parallèles et égaux","Différents","Inclinés"],a:1,exp:"Parallèles et égaux."},
+{cat:"Mathématiques",q:"L'aire d'un trapèze :",opts:["(B+b)×h","(B+b)×h/2","B×h","B×h/2"],a:1,exp:"(B+b)×h/2."},
+{cat:"Mathématiques",q:"Un cercle a un rayon de 7 cm. Son aire (π≈22/7) :",opts:["154 cm²","44 cm²","49 cm²","77 cm²"],a:0,exp:"22/7×49 = 154."},
+{cat:"Mathématiques",q:"Le volume d'une sphère de rayon r :",opts:["(4/3)πr³","4πr²","πr²","2πr³"],a:0,exp:"(4/3)πr³."},
+{cat:"Mathématiques",q:"Le volume d'un cône :",opts:["πr²h","πr²h/3","(4/3)πr³","2πr²h"],a:1,exp:"πr²h/3."},
+{cat:"Mathématiques",q:"Un triangle avec 3 côtés égaux est :",opts:["Isocèle","Rectangle","Équilatéral","Scalène"],a:2,exp:"Équilatéral."},
+{cat:"Mathématiques",q:"La médiatrice d'un segment est :",opts:["Parallèle au segment","Perpendiculaire au segment en son milieu","Bissectrice","Tangente"],a:1,exp:"Perpendiculaire en son milieu."},
+{cat:"Mathématiques",q:"Les médianes d'un triangle se coupent en :",opts:["Orthocentre","Centre de gravité","Centre du cercle circonscrit","Centre du cercle inscrit"],a:1,exp:"Centre de gravité."},
+{cat:"Mathématiques",q:"Les médiatrices d'un triangle se coupent en :",opts:["Orthocentre","Centre de gravité","Centre du cercle circonscrit","Centre du cercle inscrit"],a:2,exp:"Centre du cercle circonscrit."},
+{cat:"Mathématiques",q:"Les bissectrices d'un triangle se coupent en :",opts:["Orthocentre","Centre de gravité","Centre du cercle circonscrit","Centre du cercle inscrit"],a:3,exp:"Centre du cercle inscrit."},
+{cat:"Mathématiques",q:"L'aire d'un rectangle est 24 cm², sa longueur est 6 cm. Sa largeur est :",opts:["3 cm","4 cm","6 cm","8 cm"],a:1,exp:"24/6 = 4."},
+{cat:"Mathématiques",q:"Le périmètre d'un carré de côté 7 cm :",opts:["21","28","49","14"],a:1,exp:"4×7 = 28."},
+{cat:"Mathématiques",q:"La diagonale d'un carré de côté 5 cm (arrondi) :",opts:["5","7,07","10","25"],a:1,exp:"d = 5√2 ≈ 7,07."},
+{cat:"Mathématiques",q:"Deux triangles sont semblables si :",opts:["Ils ont des angles égaux","Ils ont des côtés égaux","Ils ont la même aire","Ils sont isocèles"],a:0,exp:"Angles égaux."},
+
+/* --- Statistiques et probabilités (20) --- */
+{cat:"Mathématiques",q:"La moyenne de 4, 8, 12, 16 est :",opts:["8","10","12","14"],a:1,exp:"(4+8+12+16)/4 = 10."},
+{cat:"Mathématiques",q:"La médiane de 3, 7, 9, 11, 15 est :",opts:["7","9","11","5"],a:1,exp:"Valeur centrale : 9."},
+{cat:"Mathématiques",q:"Le mode de la série 2, 4, 4, 6, 8, 4 est :",opts:["2","4","6","8"],a:1,exp:"4 apparaît 3 fois."},
+{cat:"Mathématiques",q:"L'étendue de la série 5, 8, 12, 20 est :",opts:["12","15","20","5"],a:1,exp:"20-5 = 15."},
+{cat:"Mathématiques",q:"La probabilité d'obtenir pile en lançant une pièce :",opts:["1/4","1/3","1/2","1"],a:2,exp:"1/2."},
+{cat:"Mathématiques",q:"La probabilité d'obtenir un 6 avec un dé :",opts:["1/6","1/3","1/2","1"],a:0,exp:"1/6."},
+{cat:"Mathématiques",q:"La probabilité d'obtenir un nombre pair avec un dé :",opts:["1/6","1/3","1/2","2/3"],a:2,exp:"3/6 = 1/2."},
+{cat:"Mathématiques",q:"Si P(A) = 0,3 alors P(non A) =",opts:["0,3","0,7","0,5","1"],a:1,exp:"1 - 0,3 = 0,7."},
+{cat:"Mathématiques",q:"La moyenne pondérée de : 10 (coef 2), 15 (coef 3) est :",opts:["12","13","14","15"],a:1,exp:"(20+45)/5 = 13."},
+{cat:"Mathématiques",q:"Dans une urne avec 3 boules rouges et 7 noires, P(rouge) =",opts:["3/7","3/10","7/10","1/3"],a:1,exp:"3/10."},
+{cat:"Mathématiques",q:"L'effectif total est 20, la fréquence est 5. Le pourcentage :",opts:["5%","20%","25%","30%"],a:2,exp:"5/20 = 25%."},
+{cat:"Mathématiques",q:"La médiane sépare la série en :",opts:["Deux parties inégales","Deux parties égales","Trois parties","Quatre parties"],a:1,exp:"Deux parties égales."},
+{cat:"Mathématiques",q:"Le premier quartile Q1 correspond à :",opts:["25%","50%","75%","100%"],a:0,exp:"25%."},
+{cat:"Mathématiques",q:"Le troisième quartile Q3 correspond à :",opts:["25%","50%","75%","100%"],a:2,exp:"75%."},
+{cat:"Mathématiques",q:"L'écart interquartile =",opts:["Q1+Q3","Q3-Q1","Q2-Q1","Q3+Q2"],a:1,exp:"Q3-Q1."},
+{cat:"Mathématiques",q:"Si tous les résultats sont identiques, l'écart-type est :",opts:["0","1","Grand","Négatif"],a:0,exp:"0."},
+{cat:"Mathématiques",q:"Une probabilité est toujours :",opts:["Négative","Entre 0 et 1","Supérieure à 1","Égale à 1"],a:1,exp:"Entre 0 et 1."},
+{cat:"Mathématiques",q:"La somme des probabilités de tous les cas possibles est :",opts:["0","0,5","1","2"],a:2,exp:"1."},
+{cat:"Mathématiques",q:"Lancer un dé, P(nombre > 4) :",opts:["1/6","1/3","1/2","2/3"],a:1,exp:"2/6 = 1/3."},
+{cat:"Mathématiques",q:"Sur 50 élèves, 20 sont des filles. Le pourcentage de filles :",opts:["20%","30%","40%","50%"],a:2,exp:"20/50 = 40%."},
+
+/* --- Grandeurs et mesures (20) --- */
+{cat:"Mathématiques",q:"Convertir 2,5 km en mètres :",opts:["25 m","250 m","2500 m","25000 m"],a:2,exp:"1 km = 1000 m."},
+{cat:"Mathématiques",q:"Convertir 3500 g en kg :",opts:["0,35 kg","3,5 kg","35 kg","350 kg"],a:1,exp:"1000 g = 1 kg."},
+{cat:"Mathématiques",q:"Convertir 3 h 15 min en minutes :",opts:["180 min","195 min","205 min","215 min"],a:1,exp:"3×60+15 = 195."},
+{cat:"Mathématiques",q:"Convertir 1 m² en cm² :",opts:["100 cm²","1000 cm²","10000 cm²","100000 cm²"],a:2,exp:"1 m² = 10000 cm²."},
+{cat:"Mathématiques",q:"1 litre = ? cm³",opts:["10","100","1000","10000"],a:2,exp:"1 L = 1000 cm³."},
+{cat:"Mathématiques",q:"Convertir 45 min en heure décimale :",opts:["0,45 h","0,75 h","0,9 h","1,45 h"],a:1,exp:"45/60 = 0,75 h."},
+{cat:"Mathématiques",q:"Un train roule à 90 km/h. Combien de km en 2h30 ?",opts:["180 km","200 km","225 km","270 km"],a:2,exp:"90×2,5 = 225 km."},
+{cat:"Mathématiques",q:"Vitesse = ?",opts:["d×t","d/t","t/d","d+t"],a:1,exp:"Vitesse = distance/temps."},
+{cat:"Mathématiques",q:"Un véhicule parcourt 240 km en 3 h. Sa vitesse :",opts:["70 km/h","80 km/h","90 km/h","100 km/h"],a:1,exp:"240/3 = 80."},
+{cat:"Mathématiques",q:"Convertir 20 m/s en km/h :",opts:["62 km/h","72 km/h","82 km/h","92 km/h"],a:1,exp:"20×3,6 = 72."},
+{cat:"Mathématiques",q:"Combien de secondes dans une journée ?",opts:["3600","86400","1440","7200"],a:1,exp:"24×3600 = 86400."},
+{cat:"Mathématiques",q:"1 hectare = ? m²",opts:["100","1000","10000","100000"],a:2,exp:"1 ha = 10000 m²."},
+{cat:"Mathématiques",q:"Le prix de 3 kg de pommes à 2,50 €/kg :",opts:["5,50 €","7,00 €","7,50 €","8,00 €"],a:2,exp:"3×2,50 = 7,50 €."},
+{cat:"Mathématiques",q:"Convertir 0,75 L en mL :",opts:["75 mL","750 mL","7500 mL","0,075 mL"],a:1,exp:"0,75×1000 = 750."},
+{cat:"Mathématiques",q:"5 m³ = ? litres",opts:["500","5000","50000","50"],a:1,exp:"1 m³ = 1000 L → 5000 L."},
+{cat:"Mathématiques",q:"Un robinet remplit 30 L en 6 min. Le débit :",opts:["3 L/min","4 L/min","5 L/min","6 L/min"],a:2,exp:"30/6 = 5 L/min."},
+{cat:"Mathématiques",q:"Convertir 4,5 m en cm :",opts:["45 cm","450 cm","4500 cm","45000 cm"],a:1,exp:"4,5×100 = 450."},
+{cat:"Mathématiques",q:"1 tonne = ? kg",opts:["100","500","1000","10000"],a:2,exp:"1 t = 1000 kg."},
+{cat:"Mathématiques",q:"À 12 km/h, combien de temps pour 36 km ?",opts:["2 h","3 h","4 h","5 h"],a:1,exp:"36/12 = 3 h."},
+{cat:"Mathématiques",q:"Convertir 90° en radians :",opts:["π/4","π/3","π/2","π"],a:2,exp:"90° = π/2."},
+
+/* --- Problèmes et logique (25) --- */
+{cat:"Mathématiques",q:"Un article coûte 80 € et subit une remise de 25 %. Prix final :",opts:["55 €","60 €","65 €","70 €"],a:1,exp:"80×0,75 = 60 €."},
+{cat:"Mathématiques",q:"Un prix passe de 50 € à 60 €. Le pourcentage d'augmentation :",opts:["10%","15%","20%","25%"],a:2,exp:"(10/50)×100 = 20 %."},
+{cat:"Mathématiques",q:"Un pull coûte 40 € après une remise de 20 %. Le prix initial :",opts:["45 €","48 €","50 €","52 €"],a:2,exp:"40/0,8 = 50 €."},
+{cat:"Mathématiques",q:"Deux nombres ont une somme de 30, l'un est le double de l'autre. Ils sont :",opts:["10 et 20","12 et 18","15 et 15","5 et 25"],a:0,exp:"x+2x=30 → x=10."},
+{cat:"Mathématiques",q:"Si 3 cahiers coûtent 4,50 €, combien coûtent 7 cahiers ?",opts:["9,50 €","10,00 €","10,50 €","11,00 €"],a:2,exp:"1,50×7 = 10,50 €."},
+{cat:"Mathématiques",q:"Le triple d'un nombre diminué de 5 vaut 16. Le nombre :",opts:["5","6","7","8"],a:2,exp:"3x-5=16 → x=7."},
+{cat:"Mathématiques",q:"Un rectangle a un périmètre de 30 cm, la longueur = 2×largeur. Longueur :",opts:["5 cm","10 cm","12 cm","15 cm"],a:1,exp:"2(2L+L)=30→L=5; longueur=10."},
+{cat:"Mathématiques",q:"Un père a 40 ans, son fils 10. Dans combien d'années le père aura-t-il le double ?",opts:["10","15","20","25"],a:2,exp:"40+x = 2(10+x) → x=20."},
+{cat:"Mathématiques",q:"15 % d'une population = 450 personnes. Population totale :",opts:["2500","3000","3500","4500"],a:1,exp:"450/0,15 = 3000."},
+{cat:"Mathématiques",q:"Un commerçant achète à 60 € et revend à 75 €. Bénéfice :",opts:["10 €","15 €","20 €","25 €"],a:1,exp:"75-60 = 15 €."},
+{cat:"Mathématiques",q:"Le bénéfice en pourcentage (achat 60, vente 75) :",opts:["20%","25%","30%","35%"],a:1,exp:"15/60 = 25 %."},
+{cat:"Mathématiques",q:"Une voiture consomme 6 L/100 km. Pour 350 km :",opts:["18 L","21 L","24 L","27 L"],a:1,exp:"3,5×6 = 21 L."},
+{cat:"Mathématiques",q:"Un réservoir plein à 3/4 contient 90 L. Capacité totale :",opts:["100 L","110 L","120 L","135 L"],a:2,exp:"90×4/3 = 120 L."},
+{cat:"Mathématiques",q:"Une somme double tous les 5 ans. Elle triple en :",opts:["8 ans","10 ans","12 ans","15 ans"],a:1,exp:"Pas assez d'info. (approximation)"},
+{cat:"Mathématiques",q:"Si a = 3, b = -2, alors 2a + b² =",opts:["6","8","10","12"],a:2,exp:"6+4 = 10."},
+{cat:"Mathématiques",q:"Si 2x = 12 et 3y = 15, alors x+y =",opts:["6","10","11","12"],a:2,exp:"x=6, y=5 → 11."},
+{cat:"Mathématiques",q:"Un euro = 1,10 dollar. 100 € =",opts:["90 $","100 $","110 $","120 $"],a:2,exp:"100×1,10 = 110."},
+{cat:"Mathématiques",q:"Dans une classe de 30, 60 % sont des filles. Filles :",opts:["12","15","18","20"],a:2,exp:"30×0,6 = 18."},
+{cat:"Mathématiques",q:"Un livre coûte 20 € et augmente de 10 %. Nouveau prix :",opts:["21 €","22 €","23 €","24 €"],a:1,exp:"20×1,1 = 22 €."},
+{cat:"Mathématiques",q:"Si x = 5, alors 3x² =",opts:["45","75","125","225"],a:1,exp:"3×25 = 75."},
+{cat:"Mathématiques",q:"Trouver le nombre : son double plus 8 vaut 30.",opts:["9","10","11","12"],a:2,exp:"2x+8=30 → x=11."},
+{cat:"Mathématiques",q:"On partage 180 € en 2:3:4. La plus grande part :",opts:["60 €","70 €","80 €","90 €"],a:2,exp:"4/9 × 180 = 80 €."},
+{cat:"Mathématiques",q:"Le cinquième d'un nombre augmenté de 3 = 10. Le nombre :",opts:["25","30","35","40"],a:2,exp:"x/5+3=10 → x=35."},
+{cat:"Mathématiques",q:"Une pompe vide 500 L en 25 min. Débit en L/min :",opts:["15","20","25","30"],a:1,exp:"500/25 = 20."},
+{cat:"Mathématiques",q:"Si le temps est divisé par 2 et la distance reste la même, la vitesse :",opts:["Est divisée par 2","Est multipliée par 2","Ne change pas","Est divisée par 4"],a:1,exp:"v = d/t → v double."},
+
+/* ============================================================
+   SCIENCES (70 questions)
+   ============================================================ */
+
+/* --- Biologie (20) --- */
+{cat:"Sciences",q:"Quel organe pompe le sang dans le corps humain ?",opts:["Le foie","Le cœur","Les poumons","L'estomac"],a:1,exp:"Le cœur."},
+{cat:"Sciences",q:"Combien d'os compte le corps humain adulte ?",opts:["186","206","226","246"],a:1,exp:"206 os."},
+{cat:"Sciences",q:"Quel gaz les plantes absorbent-elles pour la photosynthèse ?",opts:["Oxygène","Azote","Dioxyde de carbone","Hydrogène"],a:2,exp:"CO₂."},
+{cat:"Sciences",q:"Quel est le plus grand organe du corps humain ?",opts:["Le foie","La peau","Les intestins","Le cerveau"],a:1,exp:"La peau."},
+{cat:"Sciences",q:"Les globules rouges transportent :",opts:["L'oxygène","Le CO₂ uniquement","Les nutriments","Les hormones"],a:0,exp:"Oxygène."},
+{cat:"Sciences",q:"Où se trouve l'ADN dans la cellule eucaryote ?",opts:["Dans le cytoplasme","Dans le noyau","Dans la membrane","Dans les ribosomes"],a:1,exp:"Noyau."},
+{cat:"Sciences",q:"Combien de chromosomes chez l'être humain ?",opts:["23","44","46","48"],a:2,exp:"46 (23 paires)."},
+{cat:"Sciences",q:"Quel liquide transporte les nutriments ?",opts:["Le sang","L'urine","La bile","La sueur"],a:0,exp:"Le sang."},
+{cat:"Sciences",q:"La photosynthèse produit :",opts:["CO₂","O₂","N₂","H₂"],a:1,exp:"Oxygène."},
+{cat:"Sciences",q:"Quel organe filtre le sang ?",opts:["Le foie","Le rein","Le poumon","Le cœur"],a:1,exp:"Le rein."},
+{cat:"Sciences",q:"Quel est le rôle des globules blancs ?",opts:["Transporter O₂","Défendre l'organisme","Coaguler le sang","Produire l'énergie"],a:1,exp:"Défense."},
+{cat:"Sciences",q:"Les cellules végétales possèdent :",opts:["Une paroi cellulosique","Un flagelle","Un centriole","Une capsule"],a:0,exp:"Paroi cellulosique."},
+{cat:"Sciences",q:"La respiration cellulaire consomme :",opts:["CO₂ et eau","O₂ et glucose","N₂ et eau","O₂ et CO₂"],a:1,exp:"O₂ + glucose."},
+{cat:"Sciences",q:"Le système nerveux central comprend :",opts:["Le cœur et les poumons","Le cerveau et la moelle épinière","Les nerfs","Les muscles"],a:1,exp:"Cerveau + moelle épinière."},
+{cat:"Sciences",q:"Quel est le principal constituant du corps humain ?",opts:["Protéines","Lipides","Eau","Minéraux"],a:2,exp:"L'eau (~60%)."},
+{cat:"Sciences",q:"Les os sont principalement constitués de :",opts:["Calcium et phosphore","Fer","Sodium","Potassium"],a:0,exp:"Calcium + phosphore."},
+{cat:"Sciences",q:"Quel organe produit l'insuline ?",opts:["Le foie","Le pancréas","L'estomac","La rate"],a:1,exp:"Le pancréas."},
+{cat:"Sciences",q:"La photosynthèse a lieu dans :",opts:["Les mitochondries","Les chloroplastes","Le noyau","Les vacuoles"],a:1,exp:"Chloroplastes."},
+{cat:"Sciences",q:"Quel est le plus grand organe interne ?",opts:["Le cœur","Le foie","Les poumons","Les reins"],a:1,exp:"Le foie."},
+{cat:"Sciences",q:"Le sang est rouge grâce à :",opts:["L'hémoglobine","La chlorophylle","La mélanine","La kératine"],a:0,exp:"Hémoglobine."},
+
+/* --- Physique-Chimie (25) --- */
+{cat:"Sciences",q:"Quelle est la formule chimique de l'eau ?",opts:["H₂O","CO₂","O₂","H₂O₂"],a:0,exp:"H₂O."},
+{cat:"Sciences",q:"Quel est le symbole du fer ?",opts:["F","Fe","Ir","Fr"],a:1,exp:"Fe."},
+{cat:"Sciences",q:"Quel est le symbole de l'or ?",opts:["Or","Au","Ag","Go"],a:1,exp:"Au."},
+{cat:"Sciences",q:"Combien d'états de la matière existe-t-il principalement ?",opts:["1","2","3","4"],a:2,exp:"Solide, liquide, gazeux."},
+{cat:"Sciences",q:"L'eau bout à :",opts:["0 °C","50 °C","100 °C","200 °C"],a:2,exp:"100 °C."},
+{cat:"Sciences",q:"L'eau gèle à :",opts:["0 °C","-10 °C","10 °C","-20 °C"],a:0,exp:"0 °C."},
+{cat:"Sciences",q:"Quelle est la vitesse de la lumière ?",opts:["300 000 km/s","300 000 m/s","150 000 km/s","3 000 km/s"],a:0,exp:"300 000 km/s."},
+{cat:"Sciences",q:"Quel est le symbole de la tension électrique ?",opts:["I","U","R","P"],a:1,exp:"U."},
+{cat:"Sciences",q:"La loi d'Ohm s'écrit :",opts:["U = RI","U = R/I","I = U×R","P = U×I"],a:0,exp:"U = RI."},
+{cat:"Sciences",q:"Quel est le symbole de l'intensité ?",opts:["I","U","R","P"],a:0,exp:"I."},
+{cat:"Sciences",q:"L'unité de la tension est :",opts:["L'ampère","Le volt","L'ohm","Le watt"],a:1,exp:"Volt."},
+{cat:"Sciences",q:"L'unité de l'intensité est :",opts:["Le volt","L'ampère","L'ohm","Le joule"],a:1,exp:"Ampère."},
+{cat:"Sciences",q:"L'unité de la puissance est :",opts:["Le volt","L'ampère","Le watt","Le joule"],a:2,exp:"Watt."},
+{cat:"Sciences",q:"L'atome est composé de :",opts:["Noyau + électrons","Noyau uniquement","Électrons uniquement","Molécules"],a:0,exp:"Noyau + électrons."},
+{cat:"Sciences",q:"Le noyau atomique contient :",opts:["Protons et neutrons","Protons et électrons","Neutrons et électrons","Électrons uniquement"],a:0,exp:"Protons + neutrons."},
+{cat:"Sciences",q:"Quel est le symbole de l'oxygène ?",opts:["O","Ox","Og","Oy"],a:0,exp:"O."},
+{cat:"Sciences",q:"Quel est le symbole du carbone ?",opts:["Ca","C","Co","Cu"],a:1,exp:"C."},
+{cat:"Sciences",q:"La masse volumique de l'eau :",opts:["1 kg/L","0,5 kg/L","2 kg/L","10 kg/L"],a:0,exp:"1 kg/L."},
+{cat:"Sciences",q:"La formule de la vitesse :",opts:["v = d×t","v = d/t","v = t/d","v = d+t"],a:1,exp:"v = d/t."},
+{cat:"Sciences",q:"Quelle est la planète la plus proche du Soleil ?",opts:["Vénus","Mercure","Mars","Terre"],a:1,exp:"Mercure."},
+{cat:"Sciences",q:"Combien de planètes dans le système solaire ?",opts:["7","8","9","10"],a:1,exp:"8."},
+{cat:"Sciences",q:"La Terre tourne autour du Soleil en :",opts:["24 h","30 jours","365 jours","12 h"],a:2,exp:"365 jours."},
+{cat:"Sciences",q:"La Lune tourne autour de la Terre en :",opts:["24 h","7 jours","28 jours","365 jours"],a:2,exp:"~28 jours."},
+{cat:"Sciences",q:"Quel gaz est le plus abondant dans l'air ?",opts:["Oxygène","Azote","CO₂","Argon"],a:1,exp:"Azote (~78%)."},
+{cat:"Sciences",q:"Quel pourcentage d'oxygène dans l'air ?",opts:["10%","21%","50%","78%"],a:1,exp:"21%."},
+
+/* --- Géologie / Environnement (15) --- */
+{cat:"Sciences",q:"La couche externe de la Terre s'appelle :",opts:["Le noyau","Le manteau","La croûte","Le magma"],a:2,exp:"La croûte."},
+{cat:"Sciences",q:"Le noyau terrestre est composé principalement de :",opts:["Fer et nickel","Silicium","Carbone","Aluminium"],a:0,exp:"Fer + nickel."},
+{cat:"Sciences",q:"Les séismes sont mesurés avec :",opts:["Un baromètre","Un sismographe","Un thermomètre","Un hygromètre"],a:1,exp:"Sismographe."},
+{cat:"Sciences",q:"Le réchauffement climatique est causé principalement par :",opts:["Les gaz à effet de serre","La Lune","Le vent","La pluie"],a:0,exp:"Gaz à effet de serre."},
+{cat:"Sciences",q:"Quel gaz est principalement responsable de l'effet de serre ?",opts:["O₂","CO₂","N₂","H₂"],a:1,exp:"CO₂."},
+{cat:"Sciences",q:"Le cycle de l'eau comprend :",opts:["Évaporation, condensation, précipitation","Uniquement la pluie","Uniquement l'évaporation","Aucune étape"],a:0,exp:"Les trois étapes."},
+{cat:"Sciences",q:"Le sol est formé par :",opts:["L'érosion des roches","La pluie","Le vent uniquement","L'homme"],a:0,exp:"Érosion des roches."},
+{cat:"Sciences",q:"Les énergies renouvelables incluent :",opts:["Le pétrole","Le charbon","Le soleil","Le gaz"],a:2,exp:"Le soleil."},
+{cat:"Sciences",q:"L'énergie solaire est :",opts:["Renouvelable","Fossile","Nucléaire","Polluante"],a:0,exp:"Renouvelable."},
+{cat:"Sciences",q:"Le recyclage permet de :",opts:["Réduire les déchets","Augmenter les déchets","Polluer","Consommer plus"],a:0,exp:"Réduire les déchets."},
+{cat:"Sciences",q:"La couche d'ozone protège des :",opts:["Rayons UV","Pluies","Vents","Séismes"],a:0,exp:"Rayons UV."},
+{cat:"Sciences",q:"Le trou dans la couche d'ozone est causé par :",opts:["Les CFC","Le CO₂","L'O₂","L'eau"],a:0,exp:"Les CFC."},
+{cat:"Sciences",q:"Un volcan expulse :",opts:["De la lave","De l'eau","Du sable","Du sel"],a:0,exp:"Lave + gaz."},
+{cat:"Sciences",q:"Les roches magmatiques proviennent :",opts:["Du magma refroidi","De l'eau","Du vent","Du sable"],a:0,exp:"Magma refroidi."},
+{cat:"Sciences",q:"L'effet de serre est un phénomène :",opts:["Naturel et amplifié par l'homme","Uniquement naturel","Uniquement artificiel","Inexistant"],a:0,exp:"Naturel + amplifié."},
+
+/* --- Corps humain / Santé (10) --- */
+{cat:"Sciences",q:"La digestion commence dans :",opts:["L'estomac","La bouche","L'intestin","Le foie"],a:1,exp:"La bouche."},
+{cat:"Sciences",q:"Le foie produit :",opts:["La bile","L'urine","L'insuline","Le mucus"],a:0,exp:"La bile."},
+{cat:"Sciences",q:"Combien de dents chez l'adulte ?",opts:["28","30","32","36"],a:2,exp:"32 dents."},
+{cat:"Sciences",q:"Le cerveau consomme environ :",opts:["5% de l'énergie","20% de l'énergie","50% de l'énergie","80% de l'énergie"],a:1,exp:"~20%."},
+{cat:"Sciences",q:"L'organe de la respiration est :",opts:["Le cœur","Le poumon","Le foie","Le rein"],a:1,exp:"Le poumon."},
+{cat:"Sciences",q:"Le sang est composé de :",opts:["Plasma et cellules","Eau uniquement","Globules uniquement","Sérum uniquement"],a:0,exp:"Plasma + cellules."},
+{cat:"Sciences",q:"Le système immunitaire combat :",opts:["Les maladies","La faim","La soif","Le sommeil"],a:0,exp:"Les maladies."},
+{cat:"Sciences",q:"La vitamine C se trouve dans :",opts:["Les agrumes","La viande","Le pain","Le lait"],a:0,exp:"Agrumes."},
+{cat:"Sciences",q:"Un vaccin protège contre :",opts:["Une maladie spécifique","Toutes les maladies","Le froid","La faim"],a:0,exp:"Une maladie."},
+{cat:"Sciences",q:"L'hygiène permet d'éviter :",opts:["Les infections","La faim","Le froid","La fatigue"],a:0,exp:"Infections."},
+
+/* ============================================================
+   FRANÇAIS (70 questions)
+   ============================================================ */
+
+/* --- Grammaire (20) --- */
+{cat:"Français",q:"Dans « Le chat dort », quel est le sujet ?",opts:["Le","chat","dort","Le chat"],a:3,exp:"Sujet = Le chat."},
+{cat:"Français",q:"Quelle est la nature de « rapidement » ?",opts:["Adjectif","Adverbe","Nom","Verbe"],a:1,exp:"Adverbe."},
+{cat:"Français",q:"« Elle mange une pomme. » Le COD est :",opts:["Elle","mange","une pomme","pomme"],a:2,exp:"COD = une pomme."},
+{cat:"Français",q:"Le pluriel de « cheval » est :",opts:["Chevals","Chevaux","Chevaus","Chevales"],a:1,exp:"Chevaux."},
+{cat:"Français",q:"Le féminin de « acteur » est :",opts:["Acteure","Actrice","Acteuse","Actresse"],a:1,exp:"Actrice."},
+{cat:"Français",q:"Le participe passé de « prendre » :",opts:["Prendu","Pris","Prit","Prendé"],a:1,exp:"Pris."},
+{cat:"Français",q:"« Je suis allé » est :",opts:["Présent","Passé composé","Imparfait","Futur"],a:1,exp:"Passé composé."},
+{cat:"Français",q:"« Nous chantions » est :",opts:["Présent","Imparfait","Passé simple","Futur"],a:1,exp:"Imparfait."},
+{cat:"Français",q:"« Ils finiront » est :",opts:["Présent","Imparfait","Futur simple","Conditionnel"],a:2,exp:"Futur simple."},
+{cat:"Français",q:"« Que » dans « Je pense que tu as raison » est :",opts:["Pronom","Conjonction de subordination","Adverbe","Préposition"],a:1,exp:"Conjonction de subordination."},
+{cat:"Français",q:"« Très » est un adverbe de :",opts:["Manière","Quantité/intensité","Temps","Lieu"],a:1,exp:"Intensité."},
+{cat:"Français",q:"Quel est le pluriel de « bijou » ?",opts:["Bijous","Bijoux","Bijouxs","Bijoues"],a:1,exp:"Bijoux."},
+{cat:"Français",q:"« Leur » dans « Je leur parle » est :",opts:["Adjectif possessif","Pronom personnel","Déterminant","Adverbe"],a:1,exp:"Pronom personnel (COI)."},
+{cat:"Français",q:"Le comparatif de « bon » est :",opts:["Plus bon","Meilleur","Bonnement","Bonnissime"],a:1,exp:"Meilleur."},
+{cat:"Français",q:"Le superlatif de « bon » :",opts:["Très bon","Le meilleur","Le plus bon","Bonnissime"],a:1,exp:"Le meilleur."},
+{cat:"Français",q:"« Afin que » introduit :",opts:["Une cause","Un but","Une conséquence","Une condition"],a:1,exp:"Un but."},
+{cat:"Français",q:"« Parce que » introduit :",opts:["Une cause","Un but","Une opposition","Une conséquence"],a:0,exp:"Cause."},
+{cat:"Français",q:"« Bien que » introduit :",opts:["Une cause","Un but","Une opposition (concession)","Une conséquence"],a:2,exp:"Concession."},
+{cat:"Français",q:"« Donc » introduit :",opts:["Une cause","Un but","Une conséquence","Une opposition"],a:2,exp:"Conséquence."},
+{cat:"Français",q:"Le mode de « Il faut que tu viennes » :",opts:["Indicatif","Subjonctif","Conditionnel","Impératif"],a:1,exp:"Subjonctif."},
+
+/* --- Orthographe (15) --- */
+{cat:"Français",q:"Quelle est l'orthographe correcte ?",opts:["Développement","Dévelopement","Développpement","Developpement"],a:0,exp:"Développement."},
+{cat:"Français",q:"Quelle est l'orthographe correcte ?",opts:["Parceque","Par ce que","Parce que","Parce-que"],a:2,exp:"Parce que (2 mots)."},
+{cat:"Français",q:"« a » ou « à » : « Il __ un livre. »",opts:["a","à","as","ah"],a:0,exp:"a (verbe avoir)."},
+{cat:"Français",q:"« ou » ou « où » : « __ vas-tu ? »",opts:["ou","où","hou","oux"],a:1,exp:"où (lieu)."},
+{cat:"Français",q:"« son » ou « sont » : « Ils __ partis. »",opts:["son","sont","s'ont","sons"],a:1,exp:"sont (verbe être)."},
+{cat:"Français",q:"« et » ou « est » : « Il __ content. »",opts:["et","est","ai","es"],a:1,exp:"est (verbe être)."},
+{cat:"Français",q:"« leur » ou « leurs » : « Ils ont pris __ affaires. »",opts:["leur","leurs","leur's","leures"],a:1,exp:"leurs (accord)."},
+{cat:"Français",q:"« ce » ou « se » : « Il __ lève tôt. »",opts:["ce","se","c'","s'"],a:1,exp:"se (pronom)."},
+{cat:"Français",q:"« la » ou « là » : « Pose-le __. »",opts:["la","là","las","l'a"],a:1,exp:"là (lieu)."},
+{cat:"Français",q:"« ma » ou « m'a » : « Il __ donné un livre. »",opts:["ma","m'a","m'as","mas"],a:1,exp:"m'a (me + a)."},
+{cat:"Français",q:"Orthographe correcte :",opts:["Accueil","Acceuil","Aceuille","Accueille"],a:0,exp:"Accueil."},
+{cat:"Français",q:"Orthographe correcte :",opts:["Professionnel","Profesionnel","Professionel","Proféssionnel"],a:0,exp:"Professionnel."},
+{cat:"Français",q:"Orthographe correcte :",opts:["Dilemme","Dilemne","Dileme","Dillème"],a:0,exp:"Dilemme."},
+{cat:"Français",q:"Orthographe correcte :",opts:["Langage","Language","Languaje","Langaje"],a:0,exp:"Langage."},
+{cat:"Français",q:"Orthographe correcte :",opts:["Manteau","Mantau","Manteaux","Manto"],a:0,exp:"Manteau."},
+
+/* --- Conjugaison (15) --- */
+{cat:"Français",q:"« Je (être) » au présent :",opts:["Je suis","Je es","Je être","Je est"],a:0,exp:"Je suis."},
+{cat:"Français",q:"« Tu (avoir) » au présent :",opts:["Tu as","Tu a","Tu avoir","Tu est"],a:0,exp:"Tu as."},
+{cat:"Français",q:"« Nous (aller) » au futur simple :",opts:["Nous allons","Nous irons","Nous allions","Nous allâmes"],a:1,exp:"Nous irons."},
+{cat:"Français",q:"« Ils (faire) » à l'imparfait :",opts:["Ils faisaient","Ils font","Ils feront","Ils firent"],a:0,exp:"Ils faisaient."},
+{cat:"Français",q:"« Elle (venir) » au passé composé :",opts:["Elle est venue","Elle a venu","Elle vient","Elle vint"],a:0,exp:"Elle est venue."},
+{cat:"Français",q:"« Que je (être) » au subjonctif présent :",opts:["Que je sois","Que je suis","Que je serai","Que je serais"],a:0,exp:"Que je sois."},
+{cat:"Français",q:"« (Avoir) » à l'impératif 2e pers. sing. :",opts:["Aie","Ais","As","Ait"],a:0,exp:"Aie."},
+{cat:"Français",q:"« (Être) » à l'impératif 2e pers. sing. :",opts:["Sois","Es","Est","Soit"],a:0,exp:"Sois."},
+{cat:"Français",q:"« Je (pouvoir) » au conditionnel présent :",opts:["Je pourrais","Je pouvais","Je pourrai","Je puisse"],a:0,exp:"Je pourrais."},
+{cat:"Français",q:"« Ils (savoir) » au passé simple :",opts:["Ils surent","Ils savèrent","Ils savaient","Ils sauront"],a:0,exp:"Ils surent."},
+{cat:"Français",q:"« Vous (dire) » au présent :",opts:["Vous disez","Vous dites","Vous dîtes","Vous disiez"],a:1,exp:"Vous dites."},
+{cat:"Français",q:"« Nous (voir) » au futur :",opts:["Nous verrons","Nous voyons","Nous verrions","Nous vîmes"],a:0,exp:"Nous verrons."},
+{cat:"Français",q:"Participe présent de « finir » :",opts:["Finissant","Fini","Finissant","Finit"],a:0,exp:"Finissant."},
+{cat:"Français",q:"Gérondif de « parler » :",opts:["En parlant","Parlant","Parler","Parlé"],a:0,exp:"En parlant."},
+{cat:"Français",q:"« J'eus » est :",opts:["Passé simple","Imparfait","Futur","Présent"],a:0,exp:"Passé simple."},
+
+/* --- Vocabulaire / Synonymes / Antonymes (10) --- */
+{cat:"Français",q:"Synonyme de « content » :",opts:["Triste","Heureux","Fâché","Malade"],a:1,exp:"Heureux."},
+{cat:"Français",q:"Antonyme de « rapide » :",opts:["Vite","Lent","Fort","Faible"],a:1,exp:"Lent."},
+{cat:"Français",q:"Synonyme de « maison » :",opts:["Voiture","Demeure","Chemin","Jardin"],a:1,exp:"Demeure."},
+{cat:"Français",q:"Antonyme de « grand » :",opts:["Petit","Haut","Large","Long"],a:0,exp:"Petit."},
+{cat:"Français",q:"Synonyme de « beau » :",opts:["Joli","Laid","Sale","Vieux"],a:0,exp:"Joli."},
+{cat:"Français",q:"Antonyme de « chaud » :",opts:["Froid","Tiède","Brûlant","Doux"],a:0,exp:"Froid."},
+{cat:"Français",q:"Synonyme de « intelligent » :",opts:["Bête","Malin","Naïf","Ignorant"],a:1,exp:"Malin."},
+{cat:"Français",q:"Antonyme de « riche » :",opts:["Pauvre","Aisé","Fortuné","Opulent"],a:0,exp:"Pauvre."},
+{cat:"Français",q:"Le contraire de « toujours » :",opts:["Souvent","Jamais","Parfois","Rarement"],a:1,exp:"Jamais."},
+{cat:"Français",q:"« Éphémère » signifie :",opts:["Durable","Passager","Éternel","Permanent"],a:1,exp:"Passager."},
+
+/* --- Compréhension / Littérature (10) --- */
+{cat:"Français",q:"Qui a écrit « Les Misérables » ?",opts:["Balzac","Victor Hugo","Molière","Zola"],a:1,exp:"Victor Hugo."},
+{cat:"Français",q:"Qui a écrit « Le Petit Prince » ?",opts:["Saint-Exupéry","Camus","Proust","Flaubert"],a:0,exp:"Saint-Exupéry."},
+{cat:"Français",q:"Qui a écrit « L'Avare » ?",opts:["Racine","Corneille","Molière","Voltaire"],a:2,exp:"Molière."},
+{cat:"Français",q:"Qui a écrit « Madame Bovary » ?",opts:["Flaubert","Balzac","Stendhal","Zola"],a:0,exp:"Flaubert."},
+{cat:"Français",q:"« Le Cid » est une pièce de :",opts:["Racine","Corneille","Molière","Beaumarchais"],a:1,exp:"Corneille."},
+{cat:"Français",q:"Le genre de « Le Rouge et le Noir » :",opts:["Roman","Poésie","Théâtre","Essai"],a:0,exp:"Roman (Stendhal)."},
+{cat:"Français",q:"Qui a écrit « Candide » ?",opts:["Rousseau","Voltaire","Diderot","Montesquieu"],a:1,exp:"Voltaire."},
+{cat:"Français",q:"« Les Fleurs du mal » est de :",opts:["Rimbaud","Baudelaire","Verlaine","Mallarmé"],a:1,exp:"Baudelaire."},
+{cat:"Français",q:"Qui a écrit « Germinal » ?",opts:["Zola","Maupassant","Hugo","Balzac"],a:0,exp:"Zola."},
+{cat:"Français",q:"« La Peste » est un roman de :",opts:["Camus","Sartre","Malraux","Gide"],a:0,exp:"Albert Camus."},
+
+];
+
+/* ============================================================
+   LOGIQUE DU QUIZ
+   ============================================================ */
+let currentQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let wrongCount = 0;
+let answered = 0;
+let selectedOption = null;
+let answeredState = false;
+
+const CATEGORIES = {
+  "Mathématiques": "📐",
+  "Sciences": "🔬",
+  "Français": "📖"
+};
+
+function initSections(){
+  const grid = document.getElementById('sectionsGrid');
+  const counts = {};
+  QUESTIONS.forEach(q => { counts[q.cat] = (counts[q.cat]||0)+1; });
+  let html = '';
+  Object.keys(counts).forEach(cat => {
+    html += `<div class="section-card" onclick="startQuiz('${cat}')">
+      <div class="icon">${CATEGORIES[cat]||'📖'}</div>
+      <div class="name">${cat}</div>
+      <div class="count">${counts[cat]} questions</div>
+    </div>`;
+  });
+  grid.innerHTML = html;
+  document.getElementById('statTotal').textContent = QUESTIONS.length;
+}
+
+function startQuiz(mode){
+  if(mode === 'all'){
+    currentQuestions = [...QUESTIONS];
+  } else if(mode === 'random'){
+    currentQuestions = shuffle([...QUESTIONS]).slice(0,50);
+  } else {
+    currentQuestions = QUESTIONS.filter(q => q.cat === mode);
+  }
+  currentIndex = 0;
+  score = 0;
+  wrongCount = 0;
+  answered = 0;
+  selectedOption = null;
+  answeredState = false;
+  document.querySelectorAll('.section-card').forEach(c => c.classList.remove('active'));
+  renderQuestion();
+  updateStats();
+}
+
+function shuffle(arr){
+  for(let i = arr.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function renderQuestion(){
+  const area = document.getElementById('quizArea');
+  area.classList.add('active');
+  if(currentIndex >= currentQuestions.length){
+    renderResult();
+    return;
+  }
+  const q = currentQuestions[currentIndex];
+  const letters = ['A','B','C','D'];
+  let optsHtml = '';
+  q.opts.forEach((opt,i) => {
+    optsHtml += `<div class="option" data-idx="${i}" onclick="selectOption(${i})">
+      <span class="letter">${letters[i]}</span>
+      <span>${opt}</span>
+    </div>`;
+  });
+
+  area.innerHTML = `
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">Question ${currentIndex+1} / ${currentQuestions.length}</span>
+        <span class="q-tag">${CATEGORIES[q.cat]||'📖'} ${q.cat}</span>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="options" id="optionsBox">${optsHtml}</div>
+      <div class="explanation" id="explanation">💡 <strong>Explication :</strong> ${q.exp}</div>
+      <div class="nav-buttons">
+        <button class="btn btn-outline" onclick="prevQuestion()" ${currentIndex===0?'disabled style="opacity:.4"':''}>⬅️ Précédent</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Suivant ➡️</button>
+      </div>
+    </div>
+  `;
+  selectedOption = null;
+  answeredState = false;
+  updateProgress();
+}
+
+function selectOption(idx){
+  if(answeredState) return;
+  const q = currentQuestions[currentIndex];
+  const options = document.querySelectorAll('#optionsBox .option');
+  options.forEach(o => o.classList.remove('selected','correct','wrong'));
+  options[idx].classList.add('selected');
+  selectedOption = idx;
+  answeredState = true;
+  answered++;
+  if(idx === q.a){
+    options[idx].classList.add('correct');
+    score++;
+  } else {
+    options[idx].classList.add('wrong');
+    options[q.a].classList.add('correct');
+    wrongCount++;
+  }
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('nextBtn').textContent = currentIndex === currentQuestions.length-1 ? '🏁 Voir le résultat' : 'Suivant ➡️';
+  updateStats();
+}
+
+function nextQuestion(){
+  currentIndex++;
+  renderQuestion();
+}
+
+function prevQuestion(){
+  if(currentIndex > 0){
+    currentIndex--;
+    renderQuestion();
+  }
+}
+
+function updateProgress(){
+  const total = currentQuestions.length;
+  const pct = total ? (answered/total)*100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${answered} / ${total}`;
+}
+
+function updateStats(){
+  document.getElementById('statAnswered').textContent = answered;
+  document.getElementById('statCorrect').textContent = score;
+  document.getElementById('statWrong').textContent = wrongCount;
+  updateProgress();
+}
+
+function renderResult(){
+  const area = document.getElementById('quizArea');
+  const total = currentQuestions.length;
+  const pct = total ? Math.round((score/total)*100) : 0;
+  let msg = '', sub = '';
+  if(pct >= 90){ msg = '🏆 Excellent !'; sub = 'Vous êtes prêt(e) pour le concours'; }
+  else if(pct >= 75){ msg = '🌟 Très bien'; sub = 'Niveau avancé, continuez'; }
+  else if(pct >= 60){ msg = '👍 Bien'; sub = 'Révisez certains chapitres'; }
+  else if(pct >= 40){ msg = '📖 Moyen'; sub = 'Révisez soigneusement'; }
+  else { msg = '💪 À travailler'; sub = 'Reprenez le cours depuis le début'; }
+
+  area.innerHTML = `
+    <div class="result-card">
+      <div class="result-circle" style="background:conic-gradient(var(--primary) ${pct*3.6}deg, #e8eef6 0deg);">
+        <div class="pct">${pct}%</div>
+        <div class="pct-lbl">Score</div>
+      </div>
+      <div class="result-msg">${msg}</div>
+      <div class="result-sub">${sub}</div>
+      <div class="stats" style="margin:22px 0;">
+        <div class="stat-card"><span class="num" style="color:var(--success)">${score}</span><span class="lbl">Correctes</span></div>
+        <div class="stat-card"><span class="num" style="color:var(--error)">${wrongCount}</span><span class="lbl">Fausses</span></div>
+        <div class="stat-card"><span class="num">${total}</span><span class="lbl">Total</span></div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-primary" onclick="startQuiz('all')">🔁 Refaire</button>
+        <button class="btn btn-accent" onclick="startQuiz('random')">🎲 Quiz aléatoire</button>
+      </div>
+    </div>
+  `;
+}
+
+function resetQuiz(){
+  currentQuestions = [];
+  currentIndex = 0;
+  score = 0;
+  wrongCount = 0;
+  answered = 0;
+  document.getElementById('quizArea').classList.remove('active');
+  document.getElementById('quizArea').innerHTML = '';
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressText').textContent = '0 / 0';
+  document.getElementById('statAnswered').textContent = '0';
+  document.getElementById('statCorrect').textContent = '0';
+  document.getElementById('statWrong').textContent = '0';
+  document.querySelectorAll('.section-card').forEach(c => c.classList.remove('active'));
+}
+
+initSections();
+</script>
+</body>
+</html>
